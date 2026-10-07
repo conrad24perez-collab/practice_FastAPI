@@ -1,17 +1,19 @@
-import os
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
-# Render automatically injects DATABASE_URL into environment variables
-DATABASE_URL = os.getenv("DATABASE_URL", "")
+class Item(BaseModel):
+    name: str
+    price: float
 
 @app.get("/")
 def read_root():
-    return {"message": "FastAPI is running successfully!"}
+    return {"status": "FastAPI is running!"}
 
-@app.get("/db-check")
-def check_db():
-    if DATABASE_URL:
-        return {"status": "Database URL is configured!"}
-    return {"status": "No Database URL found"}
+@app.post("/test-post")
+def create_item(item: Item):
+    return {
+        "message": "POST request received successfully!",
+        "item_received": item
+    }
